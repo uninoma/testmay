@@ -1,0 +1,16 @@
+ 1.
+         the problem with the function that show function can be called before fetch function and receive undefined.
+        to solve this better to use Promise of callback function
+        $("#search").keyup(e=>{
+          let p = new Promise(resolve=>{
+            let f = fetchTopFiveSuggestions(e.target.val)
+            resolve(f)
+          })
+          p.then(f=>{
+            showAsAutoComplete(f)
+          })
+        })
+        2.
+        function showMe($element,flag){
+          $element.toggle(flag)
+        }
