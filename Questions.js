@@ -22,6 +22,7 @@ export default class Questions extends Component {
      })
   }
 
+
   calcPoints(){
     const point=100/this.state.questions.length
     let totalPoints=0;
