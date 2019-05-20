@@ -4,25 +4,42 @@ export default class Questions extends Component {
  
   constructor() {
     super();
-
     this.next=this.next.bind(this)
     this.prev=this.prev.bind(this)
     this.checkAnswer=this.checkAnswer.bind(this)
     this.state = {
       points: 0,
       questionKey:0,
-      answers:{}
     };
   }
 
   checkAnswer(e){
+     this.setState({
+       questions:{
+         ...this.state.questions,
+         [this.state.questionKey]:{
+           ...this.state.questions[this.state.questionKey],
+           userAnswer:e.target.value
+         }
+       }
+     })
+  }
 
+  calcPoints(){
+    const point=this.state.questions.length/100
+    let totalPoints=0;
+    console.log(this.state.questions)
+    for(let i=0;i<this.state.questions.length;i++){
+      console.log(this.state.questions[i].correct_answer)
+    }
+    
   }
 
   buttonsHandler(){
     this.state.questionKey<=0?this.setState({prev:false}):this.setState({prev:true})
-    this.state.questionKey>=this.state.questions.length-1?this.setState({done:true}):this.setState({done:false})
-    console.log(this.state.answers)
+    this.state.questionKey>=this.state.questions.length-1
+      ?this.setState({done:true})
+      :this.setState({done:false})
   }
 
   next(){
@@ -30,6 +47,7 @@ export default class Questions extends Component {
        questionKey: prevState.questionKey + 1
     }),e=>{
       this.buttonsHandler()
+      this.calcPoints()
     }); 
   }
 
@@ -65,9 +83,14 @@ export default class Questions extends Component {
         <form>
           <p>{q.question}</p>
           {answers.map((answer,index)=>{
+            let checked=false
+            if(this.state.questions[this.state.questionKey].userAnswer &&
+            this.state.questions[this.state.questionKey].userAnswer === answer){
+              checked=true
+            }
             return (
              <label  key={index} >
-        <input onChange={this.checkAnswer} name="answers" type="radio" value={answer} />
+        <input checked={checked} onChange={this.checkAnswer} name="answers" type="radio" value={answer} />
         {answer}<br/>
       </label>
             )
