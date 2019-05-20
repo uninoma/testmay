@@ -8,31 +8,30 @@ export default class Questions extends Component {
     this.prev=this.prev.bind(this)
     this.checkAnswer=this.checkAnswer.bind(this)
     this.state = {
-      points: 0,
+      points: null,
       questionKey:0,
     };
   }
 
   checkAnswer(e){
-     this.setState({
-       questions:{
-         ...this.state.questions,
-         [this.state.questionKey]:{
-           ...this.state.questions[this.state.questionKey],
-           userAnswer:e.target.value
-         }
-       }
+    e.persist()
+     this.setState(state=>{
+       let q=state.questions
+          q[state.questionKey]["userAnswer"]=e.target.value
+       return {question:q}
      })
   }
 
   calcPoints(){
-    const point=this.state.questions.length/100
+    const point=100/this.state.questions.length
     let totalPoints=0;
-    console.log(this.state.questions)
-    for(let i=0;i<this.state.questions.length;i++){
-      console.log(this.state.questions[i].correct_answer)
-    }
-    
+    this.setState({points:0})
+    this.state.questions.map((q)=>{
+      if(q.userAnswer && q.userAnswer === q.correct_answer){
+         totalPoints+=point
+         this.setState({points:totalPoints})
+      }
+    })
   }
 
   buttonsHandler(){
@@ -97,9 +96,12 @@ export default class Questions extends Component {
             }
             )}
         </form>
-          :"loading"}
-       {this.state.prev &&<button onClick={this.prev}>prev</button>}
+          :this.state.points?this.state.points+" points":"loading"}
+       {this.state.questions && this.state.questionKey<this.state.questions.length &&<div>
+       {this.state.prev &&
+       <button onClick={this.prev}>prev</button>}
        <button onClick={this.next}>{this.state.done?"done":"next"}</button>
+       </div>}
       </div>
     );
   }
